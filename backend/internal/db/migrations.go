@@ -24,13 +24,13 @@ var migrations = []Migration{
 		Version:     1,
 		Description: "Create initial tables",
 		Up: func(ctx context.Context, client *dynamodb.Client) error {
-			if err := createFarmerTable(ctx, client); err != nil {
+			if err := createTable(ctx, client, "Farmers"); err != nil {
 				return err
 			}
-			if err := createCCETable(ctx, client); err != nil {
+			if err := createTable(ctx, client, "CCEs"); err != nil {
 				return err
 			}
-			if err := createTicketTable(ctx, client); err != nil {
+			if err := createTable(ctx, client, "Tickets"); err != nil {
 				return err
 			}
 			return nil
@@ -160,9 +160,9 @@ func updateMigrationVersion(ctx context.Context, client *dynamodb.Client, versio
 	return nil
 }
 
-func createFarmerTable(ctx context.Context, client *dynamodb.Client) error {
+func createTable(ctx context.Context, client *dynamodb.Client, tableName string) error {
 	_, err := client.CreateTable(ctx, &dynamodb.CreateTableInput{
-		TableName: aws.String("Farmers"),
+		TableName: aws.String(tableName),
 		AttributeDefinitions: []types.AttributeDefinition{
 			{
 				AttributeName: aws.String("ID"),
@@ -181,60 +181,9 @@ func createFarmerTable(ctx context.Context, client *dynamodb.Client) error {
 		},
 	})
 	if err != nil {
-		return fmt.Errorf("failed to create Farmers table: %w", err)
+		return fmt.Errorf("failed to create %s table: %w", tableName, err)
 	}
-	return nil
-}
-
-func createCCETable(ctx context.Context, client *dynamodb.Client) error {
-	_, err := client.CreateTable(ctx, &dynamodb.CreateTableInput{
-		TableName: aws.String("CCEs"),
-		AttributeDefinitions: []types.AttributeDefinition{
-			{
-				AttributeName: aws.String("ID"),
-				AttributeType: types.ScalarAttributeTypeS,
-			},
-		},
-		KeySchema: []types.KeySchemaElement{
-			{
-				AttributeName: aws.String("ID"),
-				KeyType:       types.KeyTypeHash,
-			},
-		},
-		ProvisionedThroughput: &types.ProvisionedThroughput{
-			ReadCapacityUnits:  aws.Int64(5),
-			WriteCapacityUnits: aws.Int64(5),
-		},
-	})
-	if err != nil {
-		return fmt.Errorf("failed to create CCEs table: %w", err)
-	}
-	return nil
-}
-
-func createTicketTable(ctx context.Context, client *dynamodb.Client) error {
-	_, err := client.CreateTable(ctx, &dynamodb.CreateTableInput{
-		TableName: aws.String("Tickets"),
-		AttributeDefinitions: []types.AttributeDefinition{
-			{
-				AttributeName: aws.String("ID"),
-				AttributeType: types.ScalarAttributeTypeS,
-			},
-		},
-		KeySchema: []types.KeySchemaElement{
-			{
-				AttributeName: aws.String("ID"),
-				KeyType:       types.KeyTypeHash,
-			},
-		},
-		ProvisionedThroughput: &types.ProvisionedThroughput{
-			ReadCapacityUnits:  aws.Int64(5),
-			WriteCapacityUnits: aws.Int64(5),
-		},
-	})
-	if err != nil {
-		return fmt.Errorf("failed to create Tickets table: %w", err)
-	}
+	log.Printf("Table %s created successfully", tableName)
 	return nil
 }
 
@@ -245,5 +194,6 @@ func deleteTable(ctx context.Context, client *dynamodb.Client, tableName string)
 	if err != nil {
 		return fmt.Errorf("failed to delete table %s: %w", tableName, err)
 	}
+	log.Printf("Table %s deleted successfully", tableName)
 	return nil
 }
