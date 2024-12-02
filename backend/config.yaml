@@ -1,0 +1,15 @@
+server:
+  port: 8080
+  host: "localhost"
+
+database:
+  tablePrefix: "dev_"
+
+aws:
+  region: "us-west-2"
+
+smtp:
+  host: "smtp.example.com"
+  port: 587
+  username: "your_username"
+  password: "your_password"
