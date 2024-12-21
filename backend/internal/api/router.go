@@ -4,6 +4,7 @@ import (
 	"backend/internal/api/handlers"
 	"backend/internal/api/middleware"
 	"backend/internal/service"
+	"fmt"
 
 	"github.com/gorilla/mux"
 )
@@ -14,6 +15,8 @@ func SetupRouter(services *service.Services) *mux.Router {
 	farmerHandler := handlers.NewFarmerHandler(services.Farmer)
 	cceHandler := handlers.NewCCEHandler(services.CCE)
 	ticketHandler := handlers.NewTicketHandler(services.Ticket, services.Farmer)
+
+	fmt.Println("Inside setuprouter")
 
 	// GET
 	// Farmer routes

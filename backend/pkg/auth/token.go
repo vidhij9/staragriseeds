@@ -6,7 +6,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-var secretKey = []byte("your-secret-key") // In a real application, this should be securely stored
+var secretKey = []byte("") // In a real application, this should be securely stored
 
 type Claims struct {
 	UserID string `json:"user_id"`

@@ -208,7 +208,7 @@ func (h *FarmerHandler) GetFarmers(w http.ResponseWriter, r *http.Request) {
 
 	farmers, err := h.farmerService.ListFarmersWithFilters(r.Context(), filters)
 	if err != nil {
-		errors.WriteJSONError(w, http.StatusInternalServerError, "Failed to list farmers")
+		errors.WriteJSONError(w, http.StatusInternalServerError, "Failed to list farmers:"+err.Error())
 		return
 	}
 
